@@ -11,13 +11,13 @@ describe('Buckets', function(){
   }
 
   describe('#addBucket', function(){
-    it('should allow you to add a bucket to it', function(){
+    it('will allow you to add a bucket to it.', function(){
       var buckets = new Buckets();
       buckets.addBucket('test bucket', bucket_creator(0,10));
       assert.ok(buckets.buckets['test bucket']);
     });
 
-    it('should allow you to add more than one bucket', function(){
+    it('will allow you to add more than one bucket', function(){
       var buckets = new Buckets();
       buckets.addBucket('bucket one', bucket_creator(0,10));
       assert.ok(buckets.buckets['bucket one']);
@@ -26,17 +26,27 @@ describe('Buckets', function(){
       assert.ok(buckets.buckets['bucket two']);
     });
 
-    it('override an existing bucket', function(){
+    it('will override an existing bucket', function(){
       var buckets = new Buckets();
+
       buckets.addBucket('bucket one', bucket_creator(0,10));
       assert.ok(buckets.buckets['bucket one']);
+
       buckets.addBucket('bucket one', bucket_creator(10,20));
       assert.ok(buckets.buckets['bucket one']);
+
+      // This should not get added
+      buckets.add(5);
+      assert.equal(0, buckets.buckets['bucket one'].length);
+
+      // This will get added
+      buckets.add(15);
+      assert.equal(1, buckets.buckets['bucket one'].length);
     });
   });
 
   describe("#addBuckets", function(){
-    it('should allow you to add a list of buckets', function(){
+    it('will allow you to add a list of buckets', function(){
       var buckets = new Buckets();
       buckets.addBuckets([
         {name: 'bucket one', test: bucket_creator(0,10)},
@@ -58,7 +68,7 @@ describe('Buckets', function(){
       {name: 'bucket three', test: bucket_creator(21,30)}
     ]);
 
-    it("should allow you to add data to buckets based on the test provided with the bucket", function(){
+    it("will allow you to add data to buckets based on the test provided with the bucket", function(){
       buckets.add(5);
       buckets.add(15);
       buckets.add(16);
@@ -78,7 +88,7 @@ describe('Buckets', function(){
       {name: 'bucket three', test: bucket_creator(21,30)}
     ]);
 
-    it("should empty all buckets of any data", function(){
+    it("will empty all buckets of any data", function(){
       buckets.add(5);
       buckets.add(15);
       buckets.add(16);
@@ -104,7 +114,7 @@ describe('Buckets', function(){
       {name: 'bucket three', test: bucket_creator(21,30)}
     ]);
 
-    it("should remove a bucket", function(){
+    it("will remove a bucket", function(){
       buckets.deleteBucket('bucket two');
       buckets.add(5);
       buckets.add(15);

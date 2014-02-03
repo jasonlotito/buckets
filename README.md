@@ -11,7 +11,7 @@
 # Buckets
 <a name="buckets-addbucket"></a>
 ## #addBucket
-should allow you to add a bucket to it.
+will allow you to add a bucket to it..
 
 ```js
 var buckets = new Buckets();
@@ -19,7 +19,7 @@ buckets.addBucket('test bucket', bucket_creator(0,10));
 assert.ok(buckets.buckets['test bucket']);
 ```
 
-should allow you to add more than one bucket.
+will allow you to add more than one bucket.
 
 ```js
 var buckets = new Buckets();
@@ -30,7 +30,7 @@ buckets.addBucket('bucket two', bucket_creator(11,20));
 assert.ok(buckets.buckets['bucket two']);
 ```
 
-override an existing bucket.
+will override an existing bucket.
 
 ```js
 var buckets = new Buckets();
@@ -38,11 +38,17 @@ buckets.addBucket('bucket one', bucket_creator(0,10));
 assert.ok(buckets.buckets['bucket one']);
 buckets.addBucket('bucket one', bucket_creator(10,20));
 assert.ok(buckets.buckets['bucket one']);
+// This should not get added
+buckets.add(5);
+assert.equal(0, buckets.buckets['bucket one'].length);
+// This will get added
+buckets.add(15);
+assert.equal(1, buckets.buckets['bucket one'].length);
 ```
 
 <a name="buckets-addbuckets"></a>
 ## #addBuckets
-should allow you to add a list of buckets.
+will allow you to add a list of buckets.
 
 ```js
 var buckets = new Buckets();
@@ -58,7 +64,7 @@ assert.ok(buckets.buckets['bucket three']);
 
 <a name="buckets-add"></a>
 ## #add
-should allow you to add data to buckets based on the test provided with the bucket.
+will allow you to add data to buckets based on the test provided with the bucket.
 
 ```js
 buckets.add(5);
@@ -72,7 +78,7 @@ assert.equal(0, buckets.buckets['bucket three'].length);
 
 <a name="buckets-emptybuckets"></a>
 ## #emptyBuckets
-should empty all buckets of any data.
+will empty all buckets of any data.
 
 ```js
 buckets.add(5);
@@ -90,7 +96,7 @@ assert.equal(0, buckets.buckets['bucket three'].length);
 
 <a name="buckets-delectbucket"></a>
 ## #delectBucket
-should remove a bucket.
+will remove a bucket.
 
 ```js
 buckets.deleteBucket('bucket two');

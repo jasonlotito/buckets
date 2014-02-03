@@ -23,6 +23,10 @@ function Buckets(){
  */
 Buckets.prototype.addBucket = function(name, test)
 {
+  if(this.buckets[name]) {
+    this.deleteBucket(name);
+  }
+
   this.buckets[name] = [];
   this.bucketConditions.push({
     name: name,
@@ -51,9 +55,8 @@ Buckets.prototype.addBuckets = function(buckets)
  * Delete a bucket and it's data
  *
  * @param {string} name The name of the bucket
- * @param {function()} cb Callback when the bucket deletion is done
  */
-Buckets.prototype.deleteBucket = function(name, cb)
+Buckets.prototype.deleteBucket = function(name)
 {
   delete this.buckets[name];
   this.bucketConditions = _.filter(this.bucketConditions, function(item){
@@ -65,14 +68,13 @@ Buckets.prototype.deleteBucket = function(name, cb)
  * Add data to the bucket list
  *
  * @param {*} data
- * @param {function()} cb Callback when the insert is done
  */
-Buckets.prototype.add = function(data, cb){
-  async.each(this.bucketConditions, function(c){
+Buckets.prototype.add = function(data){
+  _.each(this.bucketConditions, function(c){
     if(c.test(data)){
       this.buckets[c.name].push(data);
     }
-  }.bind(this), cb);
+  }.bind(this));
 };
 
 Buckets.prototype.empty = function()

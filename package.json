@@ -4,8 +4,7 @@
   "description": "A simple library for handling buckets and storing the data in those buckets.",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/mocha/bin/mocha tests/bucket_tests.js",
-    "docs": "./node_modules/mocha/bin/mocha tests/bucket_tests.js  --reporter markdown  > tests/result.html && open tests/result.html"
+    "test": "./node_modules/mocha/bin/mocha tests/bucket_tests.js"
   },
   "keywords": [
     "buckets"
