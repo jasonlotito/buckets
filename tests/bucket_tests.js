@@ -4,11 +4,22 @@ var
 
 describe('Buckets', function(){
 
-  function bucket_creator(min, max){
+  var bucket_creator = function(min, max){
     return function(number){
       return min < number && number < max;
     };
-  }
+  };;
+
+  describe("This is the bucket_creator function", function(){
+    it("It returns a creator, making it easy to create tests", function(){
+      bucket_creator = function(min, max){
+        return function(number){
+          return min < number && number < max;
+        };
+      };
+    })
+  });
+
 
   describe('#addBucket', function(){
     it('will allow you to add a bucket to it.', function(){

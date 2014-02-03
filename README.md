@@ -1,5 +1,6 @@
 # TOC
    - [Buckets](#buckets)
+     - [This is the bucket_creator function](#buckets-this-is-the-bucket_creator-function)
      - [#addBucket](#buckets-addbucket)
      - [#addBuckets](#buckets-addbuckets)
      - [#add](#buckets-add)
@@ -9,6 +10,18 @@
  
 <a name="buckets"></a>
 # Buckets
+<a name="buckets-this-is-the-bucket_creator-function"></a>
+## This is the bucket_creator function
+returns a creator, making it easy to create tests.
+
+```js
+bucket_creator = function(min, max){
+  return function(number){
+    return min < number && number < max;
+  };
+};
+```
+
 <a name="buckets-addbucket"></a>
 ## #addBucket
 will allow you to add a bucket to it..
