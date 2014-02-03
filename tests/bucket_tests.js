@@ -72,12 +72,15 @@ describe('Buckets', function(){
   });
 
   describe("#add", function(){
-    var buckets = new Buckets();
-    buckets.addBuckets([
-      {name: 'bucket one', test: bucket_creator(0,10)},
-      {name: 'bucket two', test: bucket_creator(11,20)},
-      {name: 'bucket three', test: bucket_creator(21,30)}
-    ]);
+    var buckets;
+    beforeEach(function(){
+      buckets = new Buckets();
+      buckets.addBuckets([
+        {name: 'bucket one', test: bucket_creator(0,10)},
+        {name: 'bucket two', test: bucket_creator(11,20)},
+        {name: 'bucket three', test: bucket_creator(21,30)}
+      ]);
+    });
 
     it("will allow you to add data to buckets based on the test provided with the bucket", function(){
       buckets.add(5);
@@ -89,6 +92,30 @@ describe('Buckets', function(){
       assert.equal(3, buckets.buckets['bucket two'].length);
       assert.equal(0, buckets.buckets['bucket three'].length);
     })
+
+    it("will stop early by default given multiple available buckets", function(){
+      buckets.addBucket('bucket one and a half', bucket_creator(5,15));
+
+      // This should only appear in bucket one
+      buckets.add(7);
+      assert.equal(1, buckets.buckets['bucket one'].length);
+      assert.equal(0, buckets.buckets['bucket one and a half'].length);
+    });
+
+    it("it will place in multiple buckets if the option stop_on_match is false", function(){
+      var buckets = new Buckets({stop_on_match:false});
+      buckets.addBuckets([
+        {name: 'bucket one', test: bucket_creator(0,10)},
+        {name: 'bucket one and a half', test: bucket_creator(5, 15)},
+        {name: 'bucket two', test: bucket_creator(11,20)},
+        {name: 'bucket three', test: bucket_creator(21,30)}
+      ]);
+
+      // This should appear in both buckets
+      buckets.add(7);
+      assert.equal(1, buckets.buckets['bucket one'].length);
+      assert.equal(1, buckets.buckets['bucket one and a half'].length);
+    });
   });
 
   describe("#emptyBuckets", function(){

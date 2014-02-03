@@ -9,7 +9,10 @@ var
  *
  * @constructor
  */
-function Buckets(){
+function Buckets(options){
+  this.options = _.merge({}, {
+    stop_on_match: true
+  }, options || {});
   this.buckets = {};
   this.bucketConditions = [];
 }
@@ -70,9 +73,12 @@ Buckets.prototype.deleteBucket = function(name)
  * @param {*} data
  */
 Buckets.prototype.add = function(data){
+  var stopEarly = ! (this.options.stop_on_match === true);
+
   _.each(this.bucketConditions, function(c){
     if(c.test(data)){
       this.buckets[c.name].push(data);
+      return stopEarly;
     }
   }.bind(this));
 };
