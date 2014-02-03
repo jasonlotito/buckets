@@ -1,0 +1,22 @@
+{
+  "name": "bucket",
+  "version": "0.0.1",
+  "description": "A simple library for handling buckets and storing the data in those buckets.",
+  "main": "index.js",
+  "scripts": {
+    "test": "./node_modules/mocha/bin/mocha tests/bucket_tests.js",
+    "docs": "./node_modules/mocha/bin/mocha tests/bucket_tests.js  --reporter markdown  > tests/result.html && open tests/result.html"
+  },
+  "keywords": [
+    "buckets"
+  ],
+  "author": "Jason Lotito <jasonlotito@gmail.com>",
+  "license": "The MIT License (MIT)",
+  "dependencies": {
+    "async": "~0.2.10",
+    "lodash": "~2.4.1"
+  },
+  "devDependencies": {
+    "mocha": "~1.17.1"
+  }
+}
