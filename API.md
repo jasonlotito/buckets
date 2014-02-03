@@ -5,7 +5,7 @@
      - [#addBuckets](#buckets-addbuckets)
      - [#add](#buckets-add)
      - [#emptyBuckets](#buckets-emptybuckets)
-     - [#delectBucket](#buckets-delectbucket)
+     - [#deleteBucket](#buckets-deletebucket)
 <a name=""></a>
  
 <a name="buckets"></a>
@@ -89,6 +89,21 @@ assert.equal(3, buckets.buckets['bucket two'].length);
 assert.equal(0, buckets.buckets['bucket three'].length);
 ```
 
+Will add the same value multiple times.
+
+```js
+buckets.add(5);
+buckets.add(5);
+buckets.add(15);
+buckets.add(15);
+buckets.add(27);
+buckets.add(27);
+buckets.add(27);
+assert.equal(2, buckets.buckets['bucket one'].length);
+assert.equal(2, buckets.buckets['bucket two'].length);
+assert.equal(3, buckets.buckets['bucket three'].length);
+```
+
 Will stop early by default given multiple available buckets.
 
 ```js
@@ -133,8 +148,8 @@ assert.equal(0, buckets.buckets['bucket two'].length);
 assert.equal(0, buckets.buckets['bucket three'].length);
 ```
 
-<a name="buckets-delectbucket"></a>
-## #delectBucket
+<a name="buckets-deletebucket"></a>
+## #deleteBucket
 Will remove a bucket.
 
 ```js
