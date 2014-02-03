@@ -91,7 +91,21 @@ describe('Buckets', function(){
       assert.equal(1, buckets.buckets['bucket one'].length);
       assert.equal(3, buckets.buckets['bucket two'].length);
       assert.equal(0, buckets.buckets['bucket three'].length);
-    })
+    });
+
+    it('Will add the same value multiple times', function(){
+      buckets.add(5);
+      buckets.add(5);
+      buckets.add(15);
+      buckets.add(15);
+      buckets.add(27);
+      buckets.add(27);
+      buckets.add(27);
+
+      assert.equal(2, buckets.buckets['bucket one'].length);
+      assert.equal(2, buckets.buckets['bucket two'].length);
+      assert.equal(3, buckets.buckets['bucket three'].length);
+    });
 
     it('Will stop early by default given multiple available buckets', function(){
       buckets.addBucket('bucket one and a half', bucket_creator(5,15));
@@ -144,7 +158,7 @@ describe('Buckets', function(){
     });
   });
 
-  describe('#delectBucket', function(){
+  describe('#deleteBucket', function(){
     var buckets = new Buckets();
     buckets.addBuckets([
       {name: 'bucket one', test: bucket_creator(0,10)},
