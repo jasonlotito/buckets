@@ -6,6 +6,13 @@
   "scripts": {
     "test": "./node_modules/mocha/bin/mocha tests/bucket_tests.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/jasonlotito/buckets.git"
+  },
+  "bugs": {
+    "url": "http://github.com/jasonlotito/buckets/issues"
+  },
   "keywords": [
     "buckets"
   ],
