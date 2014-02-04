@@ -1,5 +1,5 @@
 {
-  "name": "bucket",
+  "name": "buckets-ds",
   "version": "0.0.1",
   "description": "A simple library for handling buckets and storing the data in those buckets.",
   "main": "index.js",
