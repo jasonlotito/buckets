@@ -10,8 +10,10 @@ add that value to any bucket that the value passes the test for.
      - [#addBucket](#buckets-addbucket)
      - [#addBuckets](#buckets-addbuckets)
      - [#add](#buckets-add)
+     - [#addList](#buckets-addlist)
      - [#emptyBuckets](#buckets-emptybuckets)
      - [#deleteBucket](#buckets-deletebucket)
+     - [#getBucket](#buckets-getbucket)
 <a name=""></a>
  
 <a name="buckets"></a>
@@ -23,7 +25,7 @@ It returns a creator, making it easy to create tests.
 ```js
 bucket_creator = function(min, max){
   return function(number){
-    return min < number && number < max;
+    return min <= number && number <= max;
   };
 };
 ```
@@ -136,6 +138,33 @@ assert.equal(1, buckets.buckets['bucket one'].length);
 assert.equal(1, buckets.buckets['bucket one and a half'].length);
 ```
 
+Will return the buckets that the data was added to.
+
+```js
+var buckets = new Buckets({stop_on_match: false});
+buckets.addBuckets([
+  {name: 'bucket one', test: bucket_creator(0, 10)},
+  {name: 'bucket two', test: bucket_creator(11, 20)},
+  {name: 'bucket three', test: bucket_creator(21, 30)}
+]);
+assert.equal('bucket one', buckets.add(5).pop());
+buckets.addBucket('bucket one and a half', bucket_creator(5, 15));
+assert.equal(2, buckets.add(5).length);
+// Buckets are returned in the order they are checked, which is the order they are added
+assert.equal('bucket one and a half', buckets.add(5)[1]);
+```
+
+<a name="buckets-addlist"></a>
+## #addList
+Will add the same value multiple times.
+
+```js
+buckets.addList([5, 5, 15, 15, 27, 27, 27]);
+assert.equal(2, buckets.buckets['bucket one'].length);
+assert.equal(2, buckets.buckets['bucket two'].length);
+assert.equal(3, buckets.buckets['bucket three'].length);
+```
+
 <a name="buckets-emptybuckets"></a>
 ## #emptyBuckets
 Will empty all buckets of any data.
@@ -164,6 +193,22 @@ buckets.add(5);
 buckets.add(15);
 assert.equal(1, buckets.buckets['bucket one'].length);
 assert.ok(!buckets.buckets['bucket two']);
+```
+
+<a name="buckets-getbucket"></a>
+## #getBucket
+Will return a bucket's contents..
+
+```js
+var bucketOne = buckets.getBucket("bucket one")
+assert.equal(4, bucketOne.length);
+assert.equal(0, bucketOne.indexOf(5));
+```
+
+Will return an empty array if the bucket doesn't exist.
+
+```js
+assert.equal(0, buckets.getBucket("I don't exist").length);
 ```
 
 # License

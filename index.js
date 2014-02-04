@@ -10,9 +10,7 @@ var
  * @constructor
  */
 function Buckets(options){
-  this.options = _.merge({}, {
-    stop_on_match: true
-  }, options || {});
+  this.options = _.merge({}, { stop_on_match: true }, options || {});
   this.buckets = {};
   this.bucketConditions = [];
 }
@@ -55,9 +53,25 @@ Buckets.prototype.addBuckets = function(buckets)
 }
 
 /**
+ * Get a bucket and return the data
+ *
+ * @param {string} name
+ * @returns {[]}
+ */
+Buckets.prototype.getBucket = function(name)
+{
+  if(!this.buckets[name]) {
+    return [];
+  }
+
+  return this.buckets[name];
+};
+
+/**
  * Delete a bucket and it's data
  *
  * @param {string} name The name of the bucket
+ * @return {Buckets}
  */
 Buckets.prototype.deleteBucket = function(name)
 {
@@ -65,29 +79,54 @@ Buckets.prototype.deleteBucket = function(name)
   this.bucketConditions = _.filter(this.bucketConditions, function(item){
     return item.name !== name;
   });
+
+  return this;
 };
 
 /**
  * Add data to the bucket list
  *
  * @param {*} data
+ * @return {Array.<string>}
  */
-Buckets.prototype.add = function(data){
-  var stopEarly = ! (this.options.stop_on_match === true);
+Buckets.prototype.add = function(data)
+{
+  var stopEarly = ! (this.options.stop_on_match === true),
+    buckets = [];
 
   _.each(this.bucketConditions, function(c){
     if(c.test(data)){
       this.buckets[c.name].push(data);
+      buckets.push(c.name);
       return stopEarly;
     }
   }.bind(this));
+
+  return buckets;
 };
 
+/**
+ * Add a list of data
+ *
+ * @param {Array.<mixed>} data
+ */
+Buckets.prototype.addList = function(data)
+{
+  _.each(data, this.add.bind(this));
+};
+
+/**
+ * Empty all the buckets
+ *
+ * @return {Buckets}
+ */
 Buckets.prototype.empty = function()
 {
   _.each(this.buckets, function(bucket, k){
     this.buckets[k] = [];
   }.bind(this));
+
+  return this;
 }
 
 module.exports = Buckets;

@@ -6,7 +6,7 @@ describe('Buckets', function(){
 
   var bucket_creator = function(min, max){
     return function(number){
-      return min < number && number < max;
+      return min <= number && number <= max;
     };
   };
 
@@ -14,7 +14,7 @@ describe('Buckets', function(){
     it('It returns a creator, making it easy to create tests', function(){
       bucket_creator = function(min, max){
         return function(number){
-          return min < number && number < max;
+          return min <= number && number <= max;
         };
       };
     })
@@ -130,6 +130,41 @@ describe('Buckets', function(){
       assert.equal(1, buckets.buckets['bucket one'].length);
       assert.equal(1, buckets.buckets['bucket one and a half'].length);
     });
+
+    it('Will return the buckets that the data was added to', function(){
+      var buckets = new Buckets({stop_on_match: false});
+      buckets.addBuckets([
+        {name: 'bucket one', test: bucket_creator(0, 10)},
+        {name: 'bucket two', test: bucket_creator(11, 20)},
+        {name: 'bucket three', test: bucket_creator(21, 30)}
+      ]);
+      assert.equal('bucket one', buckets.add(5).pop());
+      buckets.addBucket('bucket one and a half', bucket_creator(5, 15));
+      assert.equal(2, buckets.add(5).length);
+      // Buckets are returned in the order they are checked, which is the order they are added
+      assert.equal('bucket one and a half', buckets.add(5)[1]);
+    });
+
+  });
+
+  describe('#addList', function(){
+    var buckets;
+    beforeEach(function() {
+      buckets = new Buckets();
+      buckets.addBuckets([
+        {name: 'bucket one', test: bucket_creator(0, 10)},
+        {name: 'bucket two', test: bucket_creator(11, 20)},
+        {name: 'bucket three', test: bucket_creator(21, 30)}
+      ]);
+    });
+
+    it('Will add the same value multiple times', function() {
+      buckets.addList([5, 5, 15, 15, 27, 27, 27]);
+
+      assert.equal(2, buckets.buckets['bucket one'].length);
+      assert.equal(2, buckets.buckets['bucket two'].length);
+      assert.equal(3, buckets.buckets['bucket three'].length);
+    });
   });
 
   describe('#emptyBuckets', function(){
@@ -173,6 +208,37 @@ describe('Buckets', function(){
 
       assert.equal(1, buckets.buckets['bucket one'].length);
       assert.ok(!buckets.buckets['bucket two']);
+    });
+  });
+
+  describe("#getBucket", function(){
+
+    var buckets;
+    beforeEach(function() {
+      buckets = new Buckets();
+      buckets.addBuckets([
+        {name: 'bucket one', test: bucket_creator(0, 10)},
+        {name: 'bucket two', test: bucket_creator(11, 20)},
+        {name: 'bucket three', test: bucket_creator(21, 30)}
+      ]);
+
+      buckets.add(5);
+      buckets.add(8);
+      buckets.add(7);
+      buckets.add(6);
+      buckets.add(15);
+      buckets.add(16);
+      buckets.add(17);
+    });
+
+    it("Will return a bucket's contents.", function(){
+      var bucketOne = buckets.getBucket("bucket one")
+      assert.equal(4, bucketOne.length);
+      assert.equal(0, bucketOne.indexOf(5));
+    });
+
+    it("Will return an empty array if the bucket doesn't exist", function(){
+      assert.equal(0, buckets.getBucket("I don't exist").length);
     });
   });
 
