@@ -19,7 +19,6 @@
   "author": "Jason Lotito <jasonlotito@gmail.com>",
   "license": "The MIT License (MIT)",
   "dependencies": {
-    "async": "~0.2.10",
     "lodash": "~2.4.1"
   },
   "devDependencies": {

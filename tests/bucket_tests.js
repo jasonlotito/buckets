@@ -2,14 +2,13 @@ var
   assert = require('assert'),
   Buckets = require('../index.js');
 
-describe('Buckets', function(){
-
-  var bucket_creator = function(min, max){
-    return function(number){
-      return min <= number && number <= max;
-    };
+var bucket_creator = function(min, max) {
+  return function(number) {
+    return min <= number && number <= max;
   };
+};
 
+describe('Buckets', function(){
   describe('This is the bucket_creator function', function(){
     it('It returns a creator, making it easy to create tests', function(){
       bucket_creator = function(min, max){
@@ -242,4 +241,51 @@ describe('Buckets', function(){
     });
   });
 
+});
+
+describe("Bucket Stores", function(){
+
+  var store = new (function TestStore(){
+    var cb = function(called, value){};
+    this.add = function(bucketName, val) {
+      cb('add', [bucketName, val]);
+    };
+    this.deleteBucket = function(bucketName) {
+      cb('deleteBucket', [bucketName]);
+    };
+    this.empty = function(bucketName) {
+      cb('empty', [bucketName]);
+    };
+    this.sync = function(bucketsArray) {
+      cb('sync', [bucketsArray]);
+    };
+
+    this.cb = function(callback){
+      cb = callback;
+    };
+  })();
+
+  describe("#add", function() {
+    var buckets;
+
+    beforeEach(function() {
+      buckets = new Buckets({store: store});
+      buckets.addBuckets([
+        {name: 'bucket one', test: bucket_creator(0, 10)},
+        {name: 'bucket two', test: bucket_creator(11, 20)},
+        {name: 'bucket three', test: bucket_creator(21, 30)}
+      ]);
+    });
+
+    it('Will be called when new data is added to the store', function(){
+      // The store method add(bucketName, value) will be called
+      store.cb(function(bucketName, val){
+        assert.equal('add', bucketName);
+        assert.equal('bucket one', val[0]);
+        assert.equal(5, val[1]);
+      });
+
+      buckets.add(5)
+    });
+  });
 });

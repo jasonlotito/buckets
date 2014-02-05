@@ -1,6 +1,18 @@
 var
-  _ = require('lodash'),
-  async = require('async');
+  _ = require('lodash');
+
+/**
+ * NullStore
+ *
+ * @constructor
+ */
+function NullStore()
+{
+  this.add = function(name, val){};
+  this.deleteBucket = function(name){};
+  this.empty = function(name){};
+  this.sync = function(buckets){};
+}
 
 /**
  * Buckets
@@ -10,9 +22,11 @@ var
  * @constructor
  */
 function Buckets(options){
-  this.options = _.merge({}, { stop_on_match: true }, options || {});
+  this.options = _.merge({}, { stop_on_match: true, store:new NullStore() }, options || {});
   this.buckets = {};
   this.bucketConditions = [];
+
+  this.options.store.sync(this.buckets);
 }
 
 /**
@@ -76,6 +90,7 @@ Buckets.prototype.getBucket = function(name)
 Buckets.prototype.deleteBucket = function(name)
 {
   delete this.buckets[name];
+  this.options.store.deleteBucket(name);
   this.bucketConditions = _.filter(this.bucketConditions, function(item){
     return item.name !== name;
   });
@@ -97,6 +112,7 @@ Buckets.prototype.add = function(data)
   _.each(this.bucketConditions, function(c){
     if(c.test(data)){
       this.buckets[c.name].push(data);
+      this.options.store.add(c.name, data);
       buckets.push(c.name);
       return stopEarly;
     }
@@ -124,6 +140,7 @@ Buckets.prototype.empty = function()
 {
   _.each(this.buckets, function(bucket, k){
     this.buckets[k] = [];
+    this.options.store.empty(k);
   }.bind(this));
 
   return this;
