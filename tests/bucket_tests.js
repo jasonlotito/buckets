@@ -8,6 +8,48 @@ var bucket_creator = function(min, max) {
   };
 };
 
+BasicMath = {
+  add: function(x,y) { return x + y; },
+  sub: function(x,y) { return x - y; },
+  divide: function(x,y) { return x / y; },
+  times: function(x,y) { return x * y; },
+};
+
+function zero(o) {return num(0,o)}
+function one(o) {return num(1,o)}
+function two(o) {return num(2,o)}
+function three(o) {return num(3,o)}
+function four(o) {return num(4,o)}
+function five(o) {return num(5,o)}
+function six(o) {return num(6,o)}
+function seven(o) {return num(7,o)}
+function eight(o) {return num(8,o)}
+function nine(o) {return num(9,o)}
+
+function plus(n) {return op(BasicMath.add, n)}
+function minus(n) {return op(BasicMath.sub, n)}
+function times(n) {return op(BasicMath.times, n)}
+function dividedBy(n) {return op(BasicMath.divide, n)}
+
+function op(o,ro){
+//  console.log(o(5,5),ro());
+  return function(lo){
+    console.log(o);
+    return o(lo,ro());
+  }
+}
+
+function num(n,oper){
+    return oper ? oper(n) : oper;
+}
+
+console.log(five(times(five())), seven(times(five())), 35);
+//Test.assertEquals(four(plus(nine())), 13);
+//Test.assertEquals(eight(minus(three())), 5);
+//Test.assertEquals(six(dividedBy(two())), 3);
+
+
+
 describe('Buckets', function(){
   describe('This is the bucket_creator function', function(){
     it('It returns a creator, making it easy to create tests', function(){
@@ -210,7 +252,7 @@ describe('Buckets', function(){
     });
   });
 
-  describe("#getBucket", function(){
+  describe('#getBucket', function(){
 
     var buckets;
     beforeEach(function() {
@@ -230,52 +272,75 @@ describe('Buckets', function(){
       buckets.add(17);
     });
 
-    it("Will return a bucket's contents.", function(){
-      var bucketOne = buckets.getBucket("bucket one")
+    it('Will return a bucket\'s contents.', function(){
+      var bucketOne = buckets.getBucket('bucket one')
       assert.equal(4, bucketOne.length);
       assert.equal(0, bucketOne.indexOf(5));
     });
 
-    it("Will return an empty array if the bucket doesn't exist", function(){
-      assert.equal(0, buckets.getBucket("I don't exist").length);
+    it('Will return an empty array if the bucket doesn\'t exist', function(){
+      assert.equal(0, buckets.getBucket('I don\'t exist').length);
     });
   });
 
 });
 
-describe("Bucket Stores", function(){
+describe('Bucket Stores', function(){
 
-  var store = new (function TestStore(){
-    var cb = function(called, value){};
-    this.add = function(bucketName, val) {
-      cb('add', [bucketName, val]);
-    };
-    this.deleteBucket = function(bucketName) {
-      cb('deleteBucket', [bucketName]);
-    };
-    this.empty = function(bucketName) {
-      cb('empty', [bucketName]);
-    };
-    this.sync = function(bucketsArray) {
-      cb('sync', [bucketsArray]);
-    };
+  var
+    buckets,
+    store,
+    TestStore,
+    beforeEachCallback;
 
-    this.cb = function(callback){
-      cb = callback;
-    };
-  })();
+  describe("TestStore is our sample store for testing", function(){
+    it("Implements the TestStore interface the same way you would for your application and data store.", function(){
+      TestStore = function(){
+        var cb = function(called, value){};
+        this.add = function(bucketName, val) {
+          cb('add', [bucketName, val]);
+        };
+        this.deleteBucket = function(bucketName) {
+          cb('deleteBucket', [bucketName]);
+        };
+        this.empty = function(bucketList) {
+          cb('empty', [bucketList]);
+        };
+        this.sync = function(bucketsArray) {
+          cb('sync', [bucketsArray]);
+        };
 
-  describe("#add", function() {
-    var buckets;
-
-    beforeEach(function() {
-      buckets = new Buckets({store: store});
-      buckets.addBuckets([
-        {name: 'bucket one', test: bucket_creator(0, 10)},
-        {name: 'bucket two', test: bucket_creator(11, 20)},
-        {name: 'bucket three', test: bucket_creator(21, 30)}
-      ]);
+        this.cb = function(callback){
+          cb = callback;
+        };
+      }
     });
+
+    it('TestStore is passed into the bucket as the option store when the buckets are created.', function(){
+      beforeEachCallback = function() {
+        store = new TestStore();
+        buckets = new Buckets({store: store});
+        buckets.addBuckets([
+          {name: 'bucket one', test: bucket_creator(0, 10)},
+          {name: 'bucket two', test: bucket_creator(11, 20)},
+          {name: 'bucket three', test: bucket_creator(21, 30)}
+        ]);
+      };
+    });
+  });
+
+  beforeEachCallback = function() {
+    store = new TestStore();
+    buckets = new Buckets({store: store});
+    buckets.addBuckets([
+      {name: 'bucket one', test: bucket_creator(0, 10)},
+      {name: 'bucket two', test: bucket_creator(11, 20)},
+      {name: 'bucket three', test: bucket_creator(21, 30)}
+    ]);
+  };
+
+  describe('#add', function() {
+    beforeEach(beforeEachCallback);
 
     it('Will be called when new data is added to the store', function(){
       // The store method add(bucketName, value) will be called
@@ -288,4 +353,33 @@ describe("Bucket Stores", function(){
       buckets.add(5)
     });
   });
+
+  describe('#deleteBucket', function(){
+    beforeEach(beforeEachCallback);
+
+    it('Will be called when a bucked has been deleted', function(){
+      store.cb(function(methodCalled, v){
+        assert.equal('deleteBucket', methodCalled);
+        assert.equal('bucket one', v[0]);
+      });
+
+      buckets.deleteBucket('bucket one');
+    });
+  });
+
+  describe("#empty", function(){
+    beforeEach(beforeEachCallback);
+    it('Will be called when we want to empty all the buckets', function(){
+      store.cb(function(method, v){
+        assert.equal('empty', method);
+        assert.equal('bucket one', v[0][0]);
+        assert.equal('bucket two', v[0][1]);
+        assert.equal('bucket three', v[0][2]);
+      });
+
+      buckets.empty();
+    })
+  });
 });
+
+

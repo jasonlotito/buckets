@@ -8,6 +8,11 @@
      - [#emptyBuckets](#buckets-emptybuckets)
      - [#deleteBucket](#buckets-deletebucket)
      - [#getBucket](#buckets-getbucket)
+   - [Bucket Stores](#bucket-stores)
+     - [TestStore is our sample store for testing](#bucket-stores-teststore-is-our-sample-store-for-testing)
+     - [#add](#bucket-stores-add)
+     - [#deleteBucket](#bucket-stores-deletebucket)
+     - [#empty](#bucket-stores-empty)
 <a name=""></a>
  
 <a name="buckets"></a>
@@ -194,7 +199,7 @@ assert.ok(!buckets.buckets['bucket two']);
 Will return a bucket's contents..
 
 ```js
-var bucketOne = buckets.getBucket("bucket one")
+var bucketOne = buckets.getBucket('bucket one')
 assert.equal(4, bucketOne.length);
 assert.equal(0, bucketOne.indexOf(5));
 ```
@@ -202,6 +207,88 @@ assert.equal(0, bucketOne.indexOf(5));
 Will return an empty array if the bucket doesn't exist.
 
 ```js
-assert.equal(0, buckets.getBucket("I don't exist").length);
+assert.equal(0, buckets.getBucket('I don\'t exist').length);
+```
+
+<a name="bucket-stores"></a>
+# Bucket Stores
+<a name="bucket-stores-teststore-is-our-sample-store-for-testing"></a>
+## TestStore is our sample store for testing
+Implements the TestStore interface the same way you would for your application and data store..
+
+```js
+TestStore = function(){
+  var cb = function(called, value){};
+  this.add = function(bucketName, val) {
+    cb('add', [bucketName, val]);
+  };
+  this.deleteBucket = function(bucketName) {
+    cb('deleteBucket', [bucketName]);
+  };
+  this.empty = function(bucketList) {
+    cb('empty', [bucketList]);
+  };
+  this.sync = function(bucketsArray) {
+    cb('sync', [bucketsArray]);
+  };
+  this.cb = function(callback){
+    cb = callback;
+  };
+}
+```
+
+TestStore is passed into the bucket as the option store when the buckets are created..
+
+```js
+beforeEachCallback = function() {
+  store = new TestStore();
+  buckets = new Buckets({store: store});
+  buckets.addBuckets([
+    {name: 'bucket one', test: bucket_creator(0, 10)},
+    {name: 'bucket two', test: bucket_creator(11, 20)},
+    {name: 'bucket three', test: bucket_creator(21, 30)}
+  ]);
+  assert.ok(true);
+};
+```
+
+<a name="bucket-stores-add"></a>
+## #add
+Will be called when new data is added to the store.
+
+```js
+// The store method add(bucketName, value) will be called
+store.cb(function(bucketName, val){
+  assert.equal('add', bucketName);
+  assert.equal('bucket one', val[0]);
+  assert.equal(5, val[1]);
+});
+buckets.add(5)
+```
+
+<a name="bucket-stores-deletebucket"></a>
+## #deleteBucket
+Will be called when a bucked has been deleted.
+
+```js
+store.cb(function(methodCalled, v){
+  assert.equal('deleteBucket', methodCalled);
+  assert.equal('bucket one', v[0]);
+});
+buckets.deleteBucket('bucket one');
+```
+
+<a name="bucket-stores-empty"></a>
+## #empty
+Will be called when we want to empty all the buckets.
+
+```js
+store.cb(function(method, v){
+  assert.equal('empty', method);
+  assert.equal('bucket one', v[0][0]);
+  assert.equal('bucket two', v[0][1]);
+  assert.equal('bucket three', v[0][2]);
+});
+buckets.empty();
 ```
 

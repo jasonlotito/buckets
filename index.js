@@ -10,7 +10,7 @@ function NullStore()
 {
   this.add = function(name, val){};
   this.deleteBucket = function(name){};
-  this.empty = function(name){};
+  this.empty = function(bucketList){};
   this.sync = function(buckets){};
 }
 
@@ -140,8 +140,9 @@ Buckets.prototype.empty = function()
 {
   _.each(this.buckets, function(bucket, k){
     this.buckets[k] = [];
-    this.options.store.empty(k);
   }.bind(this));
+
+  this.options.store.empty(_.keys(this.buckets));
 
   return this;
 }
