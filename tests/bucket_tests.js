@@ -242,4 +242,28 @@ describe('Buckets', function(){
     });
   });
 
+  describe('#whichBuckets', function(){
+    var buckets;
+    beforeEach(function() {
+      buckets = new Buckets({stop_on_match:false});
+      buckets.addBuckets([
+        {name: 'bucket one', test: bucket_creator(0, 10)},
+        {name: 'bucket two', test: bucket_creator(11, 20)},
+        {name: 'bucket three', test: bucket_creator(21, 30)},
+        {name: 'bucket two and a half', test: bucket_creator(18,28)}
+      ]);
+    });
+
+    it('Will return the name of the bucket the value should be put in', function(){
+      // One bucket returned
+      assert.equal('bucket two', buckets.whichBucket(17));
+      assert.equal(1, buckets.whichBucket(17).length);
+
+      // Multiple buckets returned
+      var bucketList = buckets.whichBucket(19);
+      assert.equal(2, bucketList.length);
+      assert.ok(bucketList.indexOf('bucket two') >= 0);
+      assert.ok(bucketList.indexOf('bucket two and a half') >= 0);
+    });
+  });
 });

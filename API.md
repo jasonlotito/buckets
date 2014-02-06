@@ -8,6 +8,7 @@
      - [#emptyBuckets](#buckets-emptybuckets)
      - [#deleteBucket](#buckets-deletebucket)
      - [#getBucket](#buckets-getbucket)
+     - [#whichBuckets](#buckets-whichbuckets)
 <a name=""></a>
  
 <a name="buckets"></a>
@@ -203,5 +204,20 @@ Will return an empty array if the bucket doesn't exist.
 
 ```js
 assert.equal(0, buckets.getBucket("I don't exist").length);
+```
+
+<a name="buckets-whichbuckets"></a>
+## #whichBuckets
+Will return the name of the bucket the value should be put in.
+
+```js
+// One bucket returned
+assert.equal('bucket two', buckets.whichBucket(17));
+assert.equal(1, buckets.whichBucket(17).length);
+// Multiple buckets returned
+var bucketList = buckets.whichBucket(19);
+assert.equal(2, bucketList.length);
+assert.ok(bucketList.indexOf('bucket two') >= 0);
+assert.ok(bucketList.indexOf('bucket two and a half') >= 0);
 ```
 

@@ -1,6 +1,16 @@
 var
-  _ = require('lodash'),
-  async = require('async');
+  _ = require('lodash');
+
+function getBuckets (buckets, data, cb) {
+  var stopEarly = ! (buckets.options.stop_on_match === true);
+
+  _.each(buckets.bucketConditions, function(c) {
+    if (c.test(data)) {
+      cb(c);
+      return stopEarly;
+    }
+  });
+}
 
 /**
  * Buckets
@@ -91,15 +101,12 @@ Buckets.prototype.deleteBucket = function(name)
  */
 Buckets.prototype.add = function(data)
 {
-  var stopEarly = ! (this.options.stop_on_match === true),
+  var
     buckets = [];
 
-  _.each(this.bucketConditions, function(c){
-    if(c.test(data)){
-      this.buckets[c.name].push(data);
-      buckets.push(c.name);
-      return stopEarly;
-    }
+  getBuckets(this, data, function(c){
+    this.buckets[c.name].push(data);
+    buckets.push(c.name);
   }.bind(this));
 
   return buckets;
@@ -127,6 +134,25 @@ Buckets.prototype.empty = function()
   }.bind(this));
 
   return this;
-}
+};
+
+/**
+ * Returns which buckets the data would be put into
+ *
+ * @param {*} data
+ * @returns {Array.<string>}
+ */
+Buckets.prototype.whichBucket = function(data)
+{
+  var
+    buckets = [];
+
+  getBuckets(this, data, function(c){
+    this.buckets[c.name].push(data);
+    buckets.push(c.name);
+  }.bind(this));
+
+  return buckets;
+};
 
 module.exports = Buckets;
