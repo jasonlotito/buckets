@@ -20,7 +20,6 @@ describe('Buckets', function(){
     })
   });
 
-
   describe('#addBucket', function(){
     it('Will allow you to add a bucket to it.', function(){
       var buckets = new Buckets();
@@ -167,7 +166,7 @@ describe('Buckets', function(){
     });
   });
 
-  describe('#emptyBuckets', function(){
+  describe('#empty', function(){
     var buckets = new Buckets();
     buckets.addBuckets([
       {name: 'bucket one', test: bucket_creator(0,10)},
@@ -254,7 +253,7 @@ describe('Buckets', function(){
       ]);
     });
 
-    it('Will return the name of the bucket the value should be put in', function(){
+    it('Will put the data in the bucket and return the name of the buckets the value was placed in', function(){
       // One bucket returned
       assert.equal('bucket two', buckets.whichBucket(17));
       assert.equal(1, buckets.whichBucket(17).length);

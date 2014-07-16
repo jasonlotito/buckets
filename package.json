@@ -1,6 +1,6 @@
 {
   "name": "buckets-ds",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A simple library for handling buckets and storing the data in those buckets.",
   "main": "index.js",
   "scripts": {

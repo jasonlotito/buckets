@@ -5,7 +5,7 @@
      - [#addBuckets](#buckets-addbuckets)
      - [#add](#buckets-add)
      - [#addList](#buckets-addlist)
-     - [#emptyBuckets](#buckets-emptybuckets)
+     - [#empty](#buckets-empty)
      - [#deleteBucket](#buckets-deletebucket)
      - [#getBucket](#buckets-getbucket)
      - [#whichBuckets](#buckets-whichbuckets)
@@ -160,8 +160,8 @@ assert.equal(2, buckets.buckets['bucket two'].length);
 assert.equal(3, buckets.buckets['bucket three'].length);
 ```
 
-<a name="buckets-emptybuckets"></a>
-## #emptyBuckets
+<a name="buckets-empty"></a>
+## #empty
 Will empty all buckets of any data.
 
 ```js
@@ -208,7 +208,7 @@ assert.equal(0, buckets.getBucket("I don't exist").length);
 
 <a name="buckets-whichbuckets"></a>
 ## #whichBuckets
-Will return the name of the bucket the value should be put in.
+Will put the data in the bucket and return the name of the buckets the value was placed in.
 
 ```js
 // One bucket returned
