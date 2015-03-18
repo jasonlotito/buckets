@@ -214,7 +214,7 @@ assert.equal(0, buckets.getBucket("I don't exist").length);
 
 <a name="buckets-whichbuckets"></a>
 ## #whichBuckets
-Will put the data in the bucket and return the name of the buckets the value was placed in.
+Will put determine with bucket the data should be put in and return the name of the buckets.
 
 ```js
 // One bucket returned

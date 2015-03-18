@@ -148,7 +148,6 @@ Buckets.prototype.whichBucket = function(data)
     buckets = [];
 
   getBuckets(this, data, function(c){
-    this.buckets[c.name].push(data);
     buckets.push(c.name);
   }.bind(this));
 

@@ -253,7 +253,7 @@ describe('Buckets', function(){
       ]);
     });
 
-    it('Will put the data in the bucket and return the name of the buckets the value was placed in', function(){
+    it('Will put determine with bucket the data should be put in and return the name of the buckets', function(){
       // One bucket returned
       assert.equal('bucket two', buckets.whichBucket(17));
       assert.equal(1, buckets.whichBucket(17).length);
