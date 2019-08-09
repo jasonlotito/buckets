@@ -19,9 +19,9 @@
   "author": "Jason Lotito <jasonlotito@gmail.com>",
   "license": "The MIT License (MIT)",
   "dependencies": {
-    "lodash": "~2.4.1"
+    "lodash": "^4.17.15"
   },
   "devDependencies": {
-    "mocha": "~1.17.1"
+    "mocha": "^6.2.0"
   }
 }
